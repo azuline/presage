@@ -83,6 +83,7 @@ func main() {
 			if err := feed.BackfillSendingEntry(ctx, srv, *sendTo, entry); err != nil {
 				log.Fatalln(err)
 			}
+			continue
 		}
 
 		if err := feed.SendEntry(ctx, srv, *sendTo, entry); err != nil {

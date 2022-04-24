@@ -1,14 +1,14 @@
 CREATE TABLE feed_sources (
     id INTEGER PRIMARY KEY,
     link TEXT NOT NULL,
-    name TEXT NOT NULL,
-    author TEXT NOT NULL
+    title TEXT NOT NULL
 );
 
 CREATE TABLE feed_entries (
     id INTEGER PRIMARY KEY,
     source_id INTEGER NOT NULL REFERENCES feed_sources(id),
     link TEXT NOT NULL,
+    published_on TEXT NOT NULL,
     title TEXT NOT NULL,
     body TEXT NOT NULL
 );

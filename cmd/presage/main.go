@@ -19,22 +19,22 @@ func main() {
 	ctx := context.Background()
 
 	// Read CLI flags.
-	envFile := *flag.String("env-file", "", "path to env file (defaults to .env)")
-	feedsList := *flag.String("feeds-list", "", "path to the RSS feeds")
-	sendTo := email.Address(*flag.String("send-to", "", "email to send to"))
-	dryRun := *flag.Bool("dry-run", false, "don't send any emails")
+	envFile := flag.String("env-file", "", "path to env file (defaults to .env)")
+	feedsList := flag.String("feeds-list", "", "path to the RSS feeds")
+	sendTo := flag.String("send-to", "", "email to send to")
+	dryRun := flag.Bool("dry-run", false, "don't send any emails")
 	flag.Parse()
 
 	// Validate flags.
-	if feedsList == "" {
+	if *feedsList == "" {
 		log.Fatalln(errors.New("must provide a -feeds-list flag"))
 	}
-	if sendTo == "" {
+	if *sendTo == "" {
 		log.Fatalln(errors.New("must provide a -send-to flag"))
 	}
 
 	// Load environment variables.
-	if err := loadEnvvars(envFile); err != nil {
+	if err := loadEnvvars(*envFile); err != nil {
 		log.Fatalln(err)
 	}
 
@@ -59,7 +59,7 @@ func main() {
 	}
 
 	// Start tool workflow logic composition.
-	feeds, err := feed.ParseFeedsList(ctx, feedsList)
+	feeds, err := feed.ParseFeedsList(ctx, *feedsList)
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -75,11 +75,11 @@ func main() {
 
 	for _, entry := range newEntries {
 		log.Printf("Sending new entry %s\n", entry.Link)
-		if dryRun {
+		if *dryRun {
 			continue
 		}
 
-		if err := feed.SendEntry(ctx, srv, sendTo, entry); err != nil {
+		if err := feed.SendEntry(ctx, srv, *sendTo, entry); err != nil {
 			log.Fatalln(err)
 		}
 	}

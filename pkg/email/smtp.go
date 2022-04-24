@@ -39,7 +39,6 @@ func (c *client) SendEmail(to, subject, body string) error {
 			body +
 			"</body></html>",
 	)
-	fmt.Printf("Sending out: %s\n", message)
 	return smtp.SendMail(
 		c.creds.Host+":"+c.creds.Port,
 		c.auth,

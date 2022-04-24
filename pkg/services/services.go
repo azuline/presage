@@ -3,8 +3,10 @@ package services
 import (
 	"database/sql"
 
-	"github.com/azuline/presage/pkg/email"
+	// Import database driver.
 	_ "modernc.org/sqlite"
+
+	"github.com/azuline/presage/pkg/email"
 )
 
 type Services struct {

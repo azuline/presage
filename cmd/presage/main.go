@@ -6,12 +6,13 @@ import (
 	"log"
 	"os"
 
+	"github.com/joho/godotenv"
+	"github.com/pkg/errors"
+
 	"github.com/azuline/presage/pkg/email"
 	"github.com/azuline/presage/pkg/feed"
 	"github.com/azuline/presage/pkg/migrate"
 	"github.com/azuline/presage/pkg/services"
-	"github.com/joho/godotenv"
-	"github.com/pkg/errors"
 )
 
 func main() {
@@ -20,7 +21,7 @@ func main() {
 	// Read CLI flags.
 	envFile := *flag.String("env-file", "", "path to env file (defaults to .env)")
 	feedsList := *flag.String("feeds-list", "", "path to the RSS feeds")
-	sendTo := email.EmailAddress(*flag.String("send-to", "", "email to send to"))
+	sendTo := email.Address(*flag.String("send-to", "", "email to send to"))
 	dryRun := *flag.Bool("dry-run", false, "don't send any emails")
 	flag.Parse()
 
@@ -81,7 +82,7 @@ func loadEnvvars(envFile string) error {
 	if envFile != "" {
 		log.Printf("Loaded environment from %s\n", envFile)
 		if err := godotenv.Load(envFile); err != nil {
-			errors.Wrap(err, "failed to load envFile")
+			return errors.Wrap(err, "failed to load envFile")
 		}
 		return nil
 	}
@@ -90,7 +91,7 @@ func loadEnvvars(envFile string) error {
 	if _, err := os.Stat(".env"); !errors.Is(err, os.ErrNotExist) {
 		log.Println("Loaded environment from .env")
 		if err := godotenv.Load(); err != nil {
-			errors.Wrap(err, "failed to load .env")
+			return errors.Wrap(err, "failed to load .env")
 		}
 		return nil
 	}

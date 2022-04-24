@@ -1,6 +1,6 @@
 package email
 
-type EmailAddress string
+type Address string
 
 type SMTPCreds struct {
 	User string
@@ -10,7 +10,7 @@ type SMTPCreds struct {
 }
 
 type Client interface {
-	SendEmail(to EmailAddress)
+	SendEmail(to Address)
 }
 
 type client struct {
@@ -23,4 +23,4 @@ func NewClient(creds SMTPCreds) Client {
 	}
 }
 
-func (*client) SendEmail(_ EmailAddress) {}
+func (*client) SendEmail(_ Address) {}

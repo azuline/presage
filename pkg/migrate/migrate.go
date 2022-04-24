@@ -3,12 +3,12 @@ package migrate
 import (
 	"embed"
 
-	"github.com/azuline/presage/pkg/services"
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/golang-migrate/migrate/v4/database/sqlite"
 	"github.com/golang-migrate/migrate/v4/source/iofs"
 	"github.com/pkg/errors"
-	_ "modernc.org/sqlite"
+
+	"github.com/azuline/presage/pkg/services"
 )
 
 //go:embed sql/*.sql

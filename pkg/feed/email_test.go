@@ -4,8 +4,9 @@ import (
 	"context"
 	"testing"
 
-	"github.com/azuline/presage/pkg/fixtures"
 	"github.com/stretchr/testify/require"
+
+	"github.com/azuline/presage/pkg/fixtures"
 )
 
 func TestRecordSentEmail(t *testing.T) {

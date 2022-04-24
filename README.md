@@ -14,7 +14,7 @@ variables:
 export SMTP_USER=username@ema.il
 export SMTP_PASS=hopeyouknowit
 export SMTP_HOST=lol.find.your.own
-export SMTP_PORT=465
+export SMTP_PORT=587
 export DATABASE_PATH=./presage.sqlite
 
 presage \

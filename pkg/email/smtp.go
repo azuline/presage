@@ -3,8 +3,6 @@ package email
 import (
 	"fmt"
 	"net/smtp"
-
-	"github.com/lithammer/dedent"
 )
 
 type SMTPCreds struct {
@@ -32,14 +30,16 @@ func NewClient(creds SMTPCreds) Client {
 }
 
 func (c *client) SendEmail(to, subject, body string) error {
-	message := []byte(dedent.Dedent(
-		fmt.Sprintf(`
-			From: %s\r\n
-			To: %s\r\n
-			Subject: %s\r\n\r\n
-			%s
-		`, c.creds.User, to, subject, body),
-	))
+	message := []byte(
+		fmt.Sprintf("From: %s\n", c.creds.User) +
+			fmt.Sprintf("To: %s\n", to) +
+			fmt.Sprintf("Subject: %s\n", subject) +
+			"MIME-version: 1.0;\nContent-Type: text/html; charset=\"UTF-8\";\n\n" +
+			"<html><body>" +
+			body +
+			"</body></html>",
+	)
+	fmt.Printf("Sending out: %s\n", message)
 	return smtp.SendMail(
 		c.creds.Host+":"+c.creds.Port,
 		c.auth,

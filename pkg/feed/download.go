@@ -77,8 +77,8 @@ func upsertFeed(
 		INSERT INTO feed_sources (link, title, authors)
 		VALUES (:link, :title, :authors)
 		ON CONFLICT (link) DO UPDATE SET 
-			title = title,
-			authors = authors
+			title = :title,
+			authors = :authors
 	`, feed)
 	if err != nil {
 		return feed, err

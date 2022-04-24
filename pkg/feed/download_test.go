@@ -54,12 +54,12 @@ func TestUpsertFeed(t *testing.T) {
 			},
 		}
 		var err error
-		firstFeed, err = upsertFeed(ctx, srv, url, parsedFeed)
+		newFeed, err := upsertFeed(ctx, srv, url, parsedFeed)
 		require.NoError(t, err)
-		require.Equal(t, 1, firstFeed.ID)
-		require.Equal(t, url, firstFeed.Link)
-		require.Equal(t, parsedFeed.Title, firstFeed.Title)
-		require.Equal(t, "Person 3", firstFeed.Authors)
+		require.Equal(t, 1, newFeed.ID)
+		require.Equal(t, url, newFeed.Link)
+		require.Equal(t, parsedFeed.Title, newFeed.Title)
+		require.Equal(t, "Person 3", newFeed.Authors)
 	})
 }
 

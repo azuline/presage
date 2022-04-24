@@ -89,6 +89,7 @@ func upsertFeed(
 	}
 	feed.ID = int(feedID)
 
+	log.Printf("Downloaded and updated feed details: %s [%s]", feed.Title, feed.Link)
 	return feed, nil
 }
 

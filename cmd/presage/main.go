@@ -9,6 +9,7 @@ import (
 	"github.com/azuline/presage/pkg/email"
 	"github.com/azuline/presage/pkg/feed"
 	"github.com/azuline/presage/pkg/services"
+	"github.com/joho/godotenv"
 	_ "modernc.org/sqlite"
 )
 
@@ -16,16 +17,28 @@ func main() {
 	ctx := context.Background()
 
 	// Read CLI flags.
+	envFile := *flag.String("env-file", "", "path to env file (defaults to .env)")
 	feedsList := *flag.String("feeds-list", "", "path to the RSS feeds")
 	sendTo := email.EmailAddress(*flag.String("send-to", "", "email to send to"))
 	dryRun := *flag.Bool("dry-run", false, "don't send any emails")
 	flag.Parse()
 
-	// Read environment variables.
-	sendgridKey := os.Getenv("SENDGRID_KEY")
-	databaseURI := os.Getenv("DATABASE_URI")
+	// Load environment variables.
+	err := godotenv.Load(envFile, ".env")
+	if err != nil {
+		log.Fatalln(err)
+	}
 
-	srv, err := services.Initialize(sendgridKey, databaseURI)
+	// Read environment variables.
+	databaseURI := os.Getenv("DATABASE_URI")
+	smtpCreds := email.SMTPCreds{
+		User:     os.Getenv("SMTP_USER"),
+		Password: os.Getenv("SMTP_PASSWORD"),
+		Host:     os.Getenv("SMTP_HOST"),
+		Port:     os.Getenv("SMTP_PORT"),
+	}
+
+	srv, err := services.Initialize(databaseURI, smtpCreds)
 	if err != nil {
 		log.Fatalln(err)
 	}

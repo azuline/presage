@@ -12,8 +12,8 @@ type Services struct {
 }
 
 func Initialize(
-	sendgridKey string,
 	databaseURI string,
+	smtpCreds email.SMTPCreds,
 ) (*Services, error) {
 	// Initialize services.
 	db, err := sql.Open("sqlite", databaseURI)
@@ -21,7 +21,7 @@ func Initialize(
 		return nil, err
 	}
 
-	emailClient := email.NewClient(sendgridKey)
+	emailClient := email.NewClient(smtpCreds)
 
 	return &Services{
 		DB:    db,

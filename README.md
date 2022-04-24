@@ -1,10 +1,7 @@
 # presage
 
 `presage` is a tool that scrapes RSS feeds and sends out an email for new
-articles via Sendgrid.
-
-Sendgrid's free plan supports up to 100 emails a day. I hope none of us have
-more than 100 new RSS articles a day!
+articles.
 
 ## Usage
 
@@ -14,13 +11,21 @@ This tool must be called with all the following parameters and environment
 variables:
 
 ```
-export SENDGRID_KEY=your-key-here
+export SMTP_USER=username@ema.il
+export SMTP_PASS=hopeyouknowit
+export SMTP_HOST=lol.find.your.own
+export SMTP_PORT=465
 export DATABASE_URI=sqlite:///home/user/.presage.sqlite3
 
 presage \
   -send-to recipient@ema.il \
   -feeds-list /path/to/feeds.txt
 ```
+
+### Environment Variable File
+
+We support reading environment variables from a file. This defaults to `.env`,
+but can be customized by the `-env-file` parameter.
 
 ### Feeds List Format
 

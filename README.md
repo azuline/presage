@@ -15,7 +15,7 @@ export SMTP_USER=username@ema.il
 export SMTP_PASS=hopeyouknowit
 export SMTP_HOST=lol.find.your.own
 export SMTP_PORT=465
-export DATABASE_URI=sqlite:///home/user/.presage.sqlite3
+export DATABASE_PATH=./presage.sqlite
 
 presage \
   -send-to recipient@ema.il \

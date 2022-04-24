@@ -10,7 +10,6 @@ import (
 	"github.com/azuline/presage/pkg/feed"
 	"github.com/azuline/presage/pkg/services"
 	"github.com/joho/godotenv"
-	_ "modernc.org/sqlite"
 )
 
 func main() {
@@ -30,15 +29,15 @@ func main() {
 	}
 
 	// Read environment variables.
-	databaseURI := os.Getenv("DATABASE_URI")
+	databasePath := os.Getenv("DATABASE_PATH")
 	smtpCreds := email.SMTPCreds{
-		User:     os.Getenv("SMTP_USER"),
-		Password: os.Getenv("SMTP_PASSWORD"),
-		Host:     os.Getenv("SMTP_HOST"),
-		Port:     os.Getenv("SMTP_PORT"),
+		User: os.Getenv("SMTP_USER"),
+		Pass: os.Getenv("SMTP_PASS"),
+		Host: os.Getenv("SMTP_HOST"),
+		Port: os.Getenv("SMTP_PORT"),
 	}
 
-	srv, err := services.Initialize(databaseURI, smtpCreds)
+	srv, err := services.Initialize(databasePath, smtpCreds)
 	if err != nil {
 		log.Fatalln(err)
 	}

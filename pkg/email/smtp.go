@@ -3,10 +3,10 @@ package email
 type EmailAddress string
 
 type SMTPCreds struct {
-	User     string
-	Password string
-	Host     string
-	Port     string
+	User string
+	Pass string
+	Host string
+	Port string
 }
 
 type Client interface {

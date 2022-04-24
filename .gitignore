@@ -17,3 +17,5 @@
 main
 .direnv
 .cache
+.env
+.presage.sqlite

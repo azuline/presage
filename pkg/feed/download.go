@@ -73,7 +73,7 @@ func upsertFeed(
 		Authors: authors,
 	}
 
-	res, err := srv.DB.NamedExecContext(ctx, `
+	_, err := srv.DB.NamedExecContext(ctx, `
 		INSERT INTO feed_sources (link, title, authors)
 		VALUES (:link, :title, :authors)
 		ON CONFLICT (link) DO UPDATE SET 
@@ -84,11 +84,14 @@ func upsertFeed(
 		return feed, err
 	}
 
-	feedID, err := res.LastInsertId()
+	err = srv.DB.Get(&feed, `
+		SELECT id, link, title, authors
+		FROM feed_sources
+		WHERE link = ?
+	`, url)
 	if err != nil {
 		return feed, err
 	}
-	feed.ID = int(feedID)
 
 	log.Printf("Downloaded and updated feed details: %s [%s]", feed.Title, feed.Link)
 	return feed, nil

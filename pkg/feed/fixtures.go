@@ -53,11 +53,14 @@ func TestFeedEntry(t *testing.T, srv *services.Services, feed Feed) Entry {
 	return entry
 }
 
-func TestSentEmail(t *testing.T, srv *services.Services, entry Entry) SentEmail {
+func TestSentEmail(t *testing.T, srv *services.Services, entry Entry, to string) SentEmail {
 	sent := SentEmail{
 		EntryID: entry.ID,
 		ToEmail: psrand.String(12),
 		SentOn:  time.Now(),
+	}
+	if to != "" {
+		sent.ToEmail = to
 	}
 	res, err := srv.DB.NamedExec(`
 		INSERT INTO feed_sent_emails (entry_id, to_email, sent_on)

@@ -27,10 +27,11 @@ func ReadNewEntries(ctx context.Context, srv *services.Services, notSentTo strin
 			fent.content,
 			fsrc.title AS source_title
 		FROM feed_entries AS fent
-		JOIN feed_sources AS fsrc
-		LEFT JOIN feed_sent_emails AS fsem
-			ON fsem.entry_id = fent.id AND fsem.to_email = ?
-		WHERE fsem.id IS NULL
+		JOIN feed_sources AS fsrc ON fsrc.id = fent.source_id
+		WHERE NOT EXISTS (
+			SELECT 1 FROM feed_sent_emails AS fsem
+			WHERE fsem.entry_id = fent.id AND fsem.to_email = ?
+		)
 	`, notSentTo)
 	if err != nil {
 		return nil, err

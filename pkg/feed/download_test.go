@@ -68,7 +68,7 @@ func TestStoreEntry(t *testing.T) {
 
 	ctx := context.Background()
 	srv := fixtures.Services(t)
-	feed := TestFeed(t, srv)
+	feed := TestFeedSource(t, srv)
 
 	now := time.Now()
 	firstParsedItem := &gofeed.Item{

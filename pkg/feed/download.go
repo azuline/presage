@@ -119,9 +119,9 @@ func storeEntry(
 
 	res, err := srv.DB.NamedExecContext(ctx, `
 		INSERT INTO feed_entries
-			(id, source_id, link, published_on, title, description, content)
+			(source_id, link, published_on, title, description, content)
 		VALUES 
-			(:id, :source_id, :link, :published_on, :title, :description, :content)
+			(:source_id, :link, :published_on, :title, :description, :content)
 		ON CONFLICT (link) DO NOTHING
 	`, entry)
 	if err != nil {

@@ -29,6 +29,11 @@ func Initialize(
 		return nil, err
 	}
 
+	_, err = plainDB.Exec("PRAGMA foreign_keys=ON")
+	if err != nil {
+		return nil, err
+	}
+
 	db := sqlx.NewDb(plainDB, "sqlite")
 	emailClient := email.NewClient(smtpCreds)
 

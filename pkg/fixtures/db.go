@@ -20,6 +20,8 @@ func Services(t *testing.T) *services.Services {
 
 	plainDB, err := sql.Open("sqlite", databasePath)
 	require.NoError(t, err)
+	_, err = plainDB.Exec("PRAGMA foreign_keys=ON")
+	require.NoError(t, err)
 
 	db := sqlx.NewDb(plainDB, "sqlite")
 

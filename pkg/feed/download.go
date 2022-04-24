@@ -5,9 +5,10 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/azuline/presage/pkg/services"
 	"github.com/mmcdole/gofeed"
 	"github.com/pkg/errors"
+
+	"github.com/azuline/presage/pkg/services"
 )
 
 var ErrEntryHasNoLink = errors.New("entry has no link")

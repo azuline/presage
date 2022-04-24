@@ -6,8 +6,9 @@ import (
 	// Import database driver.
 	_ "modernc.org/sqlite"
 
-	"github.com/azuline/presage/pkg/email"
 	"github.com/jmoiron/sqlx"
+
+	"github.com/azuline/presage/pkg/email"
 )
 
 type Services struct {

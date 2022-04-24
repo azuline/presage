@@ -33,7 +33,7 @@ func TestFeedEntry(t *testing.T, srv *services.Services, feed Feed) Entry {
 	entry := Entry{
 		FeedID:      feed.ID,
 		Link:        psrand.String(12),
-		PublishedOn: time.Now(),
+		PublishedOn: time.Now().Format("02 Jan 06"),
 		Title:       psrand.String(12),
 		Description: psrand.String(12),
 		Content:     psrand.String(12),

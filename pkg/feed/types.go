@@ -10,13 +10,13 @@ type Feed struct {
 }
 
 type Entry struct {
-	ID          int       `db:"id"`
-	FeedID      int       `db:"source_id"`
-	Link        string    `db:"link"`
-	PublishedOn time.Time `db:"published_on"`
-	Title       string    `db:"title"`
-	Description string    `db:"description"`
-	Content     string    `db:"content"`
+	ID          int    `db:"id"`
+	FeedID      int    `db:"source_id"`
+	Link        string `db:"link"`
+	PublishedOn string `db:"published_on"`
+	Title       string `db:"title"`
+	Description string `db:"description"`
+	Content     string `db:"content"`
 }
 
 type SentEmail struct {

@@ -93,7 +93,7 @@ func TestStoreEntry(t *testing.T) {
 
 		require.Equal(t, feed.ID, firstEntry.FeedID)
 		require.Equal(t, firstParsedItem.Link, firstEntry.Link)
-		require.True(t, firstEntry.PublishedOn.Equal(*firstParsedItem.PublishedParsed))
+		require.Equal(t, firstParsedItem.PublishedParsed.Format("02 Jan 06"), firstEntry.PublishedOn)
 		require.Equal(t, firstParsedItem.Title, firstEntry.Title)
 		require.Equal(t, firstParsedItem.Description, firstEntry.Description)
 		require.Equal(t, firstParsedItem.Content, firstEntry.Content)

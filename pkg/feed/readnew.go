@@ -3,8 +3,9 @@ package feed
 import (
 	"context"
 
-	"github.com/azuline/presage/pkg/services"
 	"github.com/pkg/errors"
+
+	"github.com/azuline/presage/pkg/services"
 )
 
 type EntryWithSourceTitle struct {

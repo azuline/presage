@@ -28,9 +28,7 @@ func constructBody(entry EntryWithSourceTitle) string {
 	if entry.SourceTitle != "" {
 		body += fmt.Sprintf("<h3>%s</h3><br><br>", html.EscapeString(entry.SourceTitle))
 	}
-	if !entry.PublishedOn.IsZero() {
-		body += "Published on " + entry.PublishedOn.Format("02 Jan 06") + "<br><br>"
-	}
+	body += "Published on " + entry.PublishedOn + "<br><br>"
 
 	body += fmt.Sprintf("Link: <a href=\"%s\">%s</a><br><br>", html.EscapeString(entry.Link), html.EscapeString(entry.Link))
 

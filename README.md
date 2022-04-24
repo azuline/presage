@@ -6,6 +6,37 @@ articles via Sendgrid.
 Sendgrid's free plan supports up to 100 emails a day. I hope none of us have
 more than 100 new RSS articles a day!
 
+## Usage
+
+This tool is intended to be run periodically via a cronjob.
+
+This tool must be called with all the following parameters and environment
+variables:
+
+```
+export SENDGRID_KEY=your-key-here
+export DATABASE_URI=sqlite:///home/user/.presage.sqlite3
+
+presage \
+  -send-to recipient@ema.il \
+  -feeds-list /path/to/feeds.txt
+```
+
+### Feeds List Format
+
+The file referenced by `-feeds-list` must be formatted like so:
+
+```
+http://feed.one/something/rss.xml
+http://feed.two/again/atom.xml
+http://feed.three/whatever/hopeitsxml
+```
+
+### Dry Run
+
+The optional `-dry-run` flag does everything up until sending the emails, at
+which point it stops and does not continue.
+
 ## Development
 
 There is an included `shell.nix` file for setting up the tooling needed to work

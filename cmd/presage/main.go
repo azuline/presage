@@ -19,6 +19,8 @@ func main() {
 	feedsList := *flag.String("feeds-list", "", "path to the RSS feeds")
 	sendTo := email.EmailAddress(*flag.String("send-to", "", "email to send to"))
 	dryRun := *flag.Bool("dry-run", false, "don't send any emails")
+	flag.Parse()
+
 	// Read environment variables.
 	sendgridKey := os.Getenv("SENDGRID_KEY")
 	databaseURI := os.Getenv("DATABASE_URI")
@@ -28,6 +30,7 @@ func main() {
 		log.Fatalln(err)
 	}
 
+	// Start tool workflow logic composition.
 	feeds, err := feed.ParseFeedsList(ctx, feedsList)
 	if err != nil {
 		log.Fatalln(err)

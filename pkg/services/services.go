@@ -8,7 +8,7 @@ import (
 
 type Services struct {
 	DB    *sql.DB
-	Email email.Client
+	Email *email.Client
 }
 
 func Initialize(

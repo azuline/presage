@@ -25,7 +25,7 @@ func ReadNewEntries(ctx context.Context, srv *services.Services, notSentTo strin
 			fent.title,
 			fent.description,
 			fent.content,
-			fsrc.title AS source_title,
+			fsrc.title AS source_title
 		FROM feed_entries AS fent
 		JOIN feed_sources AS fsrc
 		LEFT JOIN feed_sent_emails AS fsem

@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/azuline/presage/pkg/services"
+	"github.com/pkg/errors"
 )
 
 type EntryWithSourceTitle struct {
@@ -34,7 +35,7 @@ func ReadNewEntries(ctx context.Context, srv *services.Services, notSentTo strin
 		)
 	`, notSentTo)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "failed reading new entries")
 	}
 
 	return newEntries, nil

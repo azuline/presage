@@ -58,21 +58,20 @@ func main() {
 		log.Fatalln(err)
 	}
 
-	// Start tool workflow logic composition.
-	feeds, err := feed.ParseFeedsList(ctx, *feedsList)
+	// Fetch the new entries from the feeds in the file and write to the database.
+	feedURLs, err := feed.ParseFeedsList(*feedsList)
 	if err != nil {
 		log.Fatalln(err)
 	}
-
-	if err := feed.DownloadNewFeedEntries(ctx, srv, feeds); err != nil {
+	if err := feed.DownloadNewFeedEntries(ctx, srv, feedURLs); err != nil {
 		log.Fatalln(err)
 	}
-
 	newEntries, err := feed.ReadNewEntries(ctx, srv)
 	if err != nil {
 		log.Fatalln(err)
 	}
 
+	// Send the emails (or not if dry run).
 	for _, entry := range newEntries {
 		log.Printf("Sending new entry %s\n", entry.Link)
 		if *dryRun {

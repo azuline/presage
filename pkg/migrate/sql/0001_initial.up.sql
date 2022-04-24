@@ -2,7 +2,7 @@ CREATE TABLE feed_sources (
     id      INTEGER PRIMARY KEY,
     link    TEXT    UNIQUE NOT NULL,
     title   TEXT    NOT NULL,
-    authors TEXT    NOT NULL,
+    authors TEXT    NOT NULL
 );
 
 CREATE TABLE feed_entries (

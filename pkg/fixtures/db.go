@@ -1,15 +1,16 @@
-package testing
+package fixtures
 
 import (
 	"database/sql"
 	"path/filepath"
 	"testing"
 
+	"github.com/jmoiron/sqlx"
+	"github.com/stretchr/testify/require"
+
 	"github.com/azuline/presage/pkg/email"
 	"github.com/azuline/presage/pkg/migrate"
 	"github.com/azuline/presage/pkg/services"
-	"github.com/jmoiron/sqlx"
-	"github.com/stretchr/testify/require"
 )
 
 func Services(t *testing.T) *services.Services {

@@ -35,7 +35,7 @@ func DownloadNewFeedEntries(
 		}
 
 		for _, parsedItem := range parsedFeed.Items {
-			err := storeEntry(ctx, srv, feed, parsedItem)
+			_, err := storeEntry(ctx, srv, feed, parsedItem)
 			if errors.Is(err, ErrEntryHasNoLink) {
 				log.Printf("Failed to store entry b/c no link: %s from %s", parsedItem.Title, url)
 				continue
@@ -92,17 +92,20 @@ func upsertFeed(
 	return feed, nil
 }
 
+// storeEntry stores a feed entry into the database and returns its ID.
 func storeEntry(
 	ctx context.Context,
 	srv *services.Services,
 	feed Feed,
 	parsedItem *gofeed.Item,
-) error {
+) (int, error) {
 	link := parsedItem.Link
-	if link == "" && len(parsedItem.Links) > 0 {
-		link = parsedItem.Links[0]
-	} else {
-		return ErrEntryHasNoLink
+	if link == "" {
+		if len(parsedItem.Links) > 0 {
+			link = parsedItem.Links[0]
+		} else {
+			return 0, ErrEntryHasNoLink
+		}
 	}
 
 	entry := Entry{
@@ -119,19 +122,24 @@ func storeEntry(
 			(id, source_id, link, published_on, title, description, content)
 		VALUES 
 			(:id, :source_id, :link, :published_on, :title, :description, :content)
-		ON CONFLICT IGNORE
-	`, feed)
+		ON CONFLICT (link) DO NOTHING
+	`, entry)
 	if err != nil {
-		return errors.Wrap(err, "failed upserting feed entry")
+		return 0, errors.Wrap(err, "failed upserting feed entry")
+	}
+
+	entryID, err := res.LastInsertId()
+	if err != nil {
+		return 0, errors.Wrap(err, "failed to fetch last insert ID")
 	}
 
 	rowsAffected, err := res.RowsAffected()
 	if err != nil {
-		return errors.Wrap(err, "failed to fetch rows affected")
+		return 0, errors.Wrap(err, "failed to fetch rows affected")
 	}
 	if rowsAffected > 0 {
-		log.Printf("Stored blog post %s - %s\n", feed.Link, entry.Title)
+		log.Printf("Stored feed entry %d %s - %s\n", entryID, feed.Link, entry.Title)
 	}
 
-	return nil
+	return int(entryID), nil
 }

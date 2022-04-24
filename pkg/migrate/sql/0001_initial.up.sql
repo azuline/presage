@@ -19,5 +19,5 @@ CREATE TABLE feed_sent_emails (
     id       INTEGER  PRIMARY KEY,
     entry_id INTEGER  NOT NULL REFERENCES feed_entries(id),
     to_email TEXT     NOT NULL,
-    sent_on  DATETIME NOT NULL
+    sent_on  DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 );

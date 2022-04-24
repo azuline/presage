@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"flag"
+	"fmt"
 	"log"
 	"os"
 
@@ -81,6 +82,9 @@ func main() {
 		if err := feed.SendEntry(ctx, srv, *sendTo, entry); err != nil {
 			log.Fatalln(err)
 		}
+
+		fmt.Println("STOPPING EARLY")
+		os.Exit(0)
 	}
 }
 

@@ -6,10 +6,15 @@ import (
 	"github.com/azuline/presage/pkg/services"
 )
 
+type EntryWithSourceTitle struct {
+	Entry
+	SourceTitle string `db:"source_title"`
+}
+
 // ReadNewEntries returns all feed entries that have not yet been sent out over
 // email.
-func ReadNewEntries(ctx context.Context, srv *services.Services, notSentTo string) ([]Entry, error) {
-	var newEntries []Entry
+func ReadNewEntries(ctx context.Context, srv *services.Services, notSentTo string) ([]EntryWithSourceTitle, error) {
+	var newEntries []EntryWithSourceTitle
 
 	err := srv.DB.SelectContext(ctx, &newEntries, `
 		SELECT
@@ -19,8 +24,10 @@ func ReadNewEntries(ctx context.Context, srv *services.Services, notSentTo strin
 			fent.published_on,
 			fent.title,
 			fent.description,
-			fent.content
+			fent.content,
+			fsrc.title AS source_title,
 		FROM feed_entries AS fent
+		JOIN feed_sources AS fsrc
 		LEFT JOIN feed_sent_emails AS fsem
 			ON fsem.entry_id = fent.id AND fsem.to_email = ?
 		WHERE fsem.id IS NULL

@@ -12,17 +12,7 @@ func SendEntry(ctx context.Context, srv *services.Services, to string, entry Ent
 	if err := srv.Email.SendEmail(to, constructSubject(entry), constructBody(entry)); err != nil {
 		return err
 	}
-
-	_, err := srv.DB.ExecContext(
-		ctx,
-		"INSERT INTO feed_sent_emails (entry_id, to_email) VALUES (?, ?)",
-		entry.ID, to,
-	)
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return recordSentEntry(ctx, srv, to, entry)
 }
 
 func constructSubject(entry EntryWithSourceTitle) string {
@@ -54,4 +44,21 @@ func constructBody(entry EntryWithSourceTitle) string {
 	}
 
 	return body
+}
+
+func BackfillSendingEntry(ctx context.Context, srv *services.Services, to string, entry EntryWithSourceTitle) error {
+	return recordSentEntry(ctx, srv, to, entry)
+}
+
+func recordSentEntry(ctx context.Context, srv *services.Services, to string, entry EntryWithSourceTitle) error {
+	_, err := srv.DB.ExecContext(
+		ctx,
+		"INSERT INTO feed_sent_emails (entry_id, to_email) VALUES (?, ?)",
+		entry.ID, to,
+	)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

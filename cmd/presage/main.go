@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"flag"
-	"fmt"
 	"log"
 	"os"
 
@@ -24,6 +23,7 @@ func main() {
 	feedsList := flag.String("feeds-list", "", "path to the RSS feeds")
 	sendTo := flag.String("send-to", "", "email to send to")
 	dryRun := flag.Bool("dry-run", false, "don't send any emails")
+	backfill := flag.Bool("backfill", false, "don't send any emails, but record them as sent")
 	flag.Parse()
 
 	// Validate flags.
@@ -79,12 +79,15 @@ func main() {
 			continue
 		}
 
+		if *backfill {
+			if err := feed.BackfillSendingEntry(ctx, srv, *sendTo, entry); err != nil {
+				log.Fatalln(err)
+			}
+		}
+
 		if err := feed.SendEntry(ctx, srv, *sendTo, entry); err != nil {
 			log.Fatalln(err)
 		}
-
-		fmt.Println("STOPPING EARLY")
-		os.Exit(0)
 	}
 }
 

@@ -9,23 +9,27 @@ jobs:
   test:
     name: Test
     runs-on: ubuntu-latest
+    env:
+      ACTIONS_ALLOW_UNSECURE_COMMANDS: true
     steps:
       - uses: actions/checkout@v2
       - uses: cachix/install-nix-action@v10
         with:
           nix_path: nixpkgs=channel:nixos-unstable
       - name: Test
-        run: make test
+        run: nix-shell --command 'make test'
   lint:
     name: Lint
     runs-on: ubuntu-latest
+    env:
+      ACTIONS_ALLOW_UNSECURE_COMMANDS: true
     steps:
       - uses: actions/checkout@v2
       - uses: cachix/install-nix-action@v10
         with:
           nix_path: nixpkgs=channel:nixos-unstable
       - name: Lint
-        run: make lint
+        run: nix-shell --command 'make lint'
       - name: Diff
         run: git diff
       - name: Status

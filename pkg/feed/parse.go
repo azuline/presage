@@ -4,6 +4,8 @@ import (
 	"context"
 	"os"
 	"strings"
+
+	"github.com/pkg/errors"
 )
 
 type Feed struct {
@@ -15,7 +17,7 @@ type Feed struct {
 func ParseFeedsList(ctx context.Context, feedsList string) ([]Feed, error) {
 	bcontents, err := os.ReadFile(feedsList)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "failed to read feeds list")
 	}
 
 	scontents := string(bcontents)

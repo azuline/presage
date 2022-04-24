@@ -8,8 +8,10 @@ import (
 
 	"github.com/azuline/presage/pkg/email"
 	"github.com/azuline/presage/pkg/feed"
+	"github.com/azuline/presage/pkg/migrate"
 	"github.com/azuline/presage/pkg/services"
 	"github.com/joho/godotenv"
+	"github.com/pkg/errors"
 )
 
 func main() {
@@ -23,8 +25,7 @@ func main() {
 	flag.Parse()
 
 	// Load environment variables.
-	err := godotenv.Load(envFile, ".env")
-	if err != nil {
+	if err := loadEnvvars(envFile); err != nil {
 		log.Fatalln(err)
 	}
 
@@ -37,8 +38,14 @@ func main() {
 		Port: os.Getenv("SMTP_PORT"),
 	}
 
+	// Initialize DB & Email services.
 	srv, err := services.Initialize(databasePath, smtpCreds)
 	if err != nil {
+		log.Fatalln(err)
+	}
+
+	// Migrate database.
+	if err := migrate.Migrate(srv); err != nil {
 		log.Fatalln(err)
 	}
 
@@ -67,4 +74,28 @@ func main() {
 			log.Fatalln(err)
 		}
 	}
+}
+
+func loadEnvvars(envFile string) error {
+	// If envFile is passed in, read from that.
+	if envFile != "" {
+		log.Printf("Loaded environment from %s\n", envFile)
+		if err := godotenv.Load(envFile); err != nil {
+			errors.Wrap(err, "failed to load envFile")
+		}
+		return nil
+	}
+
+	// Otherwise, if .env exists, read from that.
+	if _, err := os.Stat(".env"); !errors.Is(err, os.ErrNotExist) {
+		log.Println("Loaded environment from .env")
+		if err := godotenv.Load(); err != nil {
+			errors.Wrap(err, "failed to load .env")
+		}
+		return nil
+	}
+
+	// Read nothing, default to the normal envvars.
+	log.Println("Did not load environment from file")
+	return nil
 }

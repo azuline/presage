@@ -1,0 +1,38 @@
+package migrate
+
+import (
+	"embed"
+
+	"github.com/azuline/presage/pkg/services"
+	"github.com/golang-migrate/migrate/v4"
+	"github.com/golang-migrate/migrate/v4/database/sqlite"
+	"github.com/golang-migrate/migrate/v4/source/iofs"
+	"github.com/pkg/errors"
+	_ "modernc.org/sqlite"
+)
+
+//go:embed sql/*.sql
+var fs embed.FS
+
+func Migrate(srv *services.Services) error {
+	migs, err := iofs.New(fs, "sql")
+	if err != nil {
+		return errors.Wrap(err, "failed to create migration iofs")
+	}
+
+	instance, err := sqlite.WithInstance(srv.DB, &sqlite.Config{})
+	if err != nil {
+		return errors.Wrap(err, "failed to create sqlite instance")
+	}
+
+	m, err := migrate.NewWithInstance("iofs", migs, "sqlite", instance)
+	if err != nil {
+		return errors.Wrap(err, "failed to create migrate instance")
+	}
+
+	if err = m.Up(); err != nil && !errors.Is(err, migrate.ErrNoChange) {
+		return errors.Wrap(err, "failed to migrate database")
+	}
+
+	return nil
+}

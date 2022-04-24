@@ -6,7 +6,6 @@ require (
 	github.com/golang-migrate/migrate/v4 v4.15.1
 	github.com/jmoiron/sqlx v1.3.5
 	github.com/joho/godotenv v1.4.0
-	github.com/lithammer/dedent v1.1.0
 	github.com/mmcdole/gofeed v1.1.3
 	github.com/pkg/errors v0.9.1
 	github.com/stretchr/testify v1.7.1

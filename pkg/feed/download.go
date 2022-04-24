@@ -10,6 +10,8 @@ import (
 	"github.com/pkg/errors"
 )
 
+var ErrEntryHasNoLink = errors.New("entry has no link")
+
 // DownloadNewFeedEntries downloads RSS feeds from the passed in list and
 // stores all new articles into the SQLite database.
 func DownloadNewFeedEntries(
@@ -32,7 +34,12 @@ func DownloadNewFeedEntries(
 		}
 
 		for _, parsedItem := range parsedFeed.Items {
-			if err := storeEntry(ctx, srv, feed, parsedItem); err != nil {
+			err := storeEntry(ctx, srv, feed, parsedItem)
+			if errors.Is(err, ErrEntryHasNoLink) {
+				log.Printf("Failed to store entry b/c no link: %s from %s", parsedItem.Title, url)
+				continue
+			}
+			if err != nil {
 				return errors.Wrap(err, fmt.Sprintf(
 					"failed to store feed entry %s from %s", parsedItem.Title, url,
 				))
@@ -64,13 +71,13 @@ func upsertFeed(
 		Authors: authors,
 	}
 
-	res, err := srv.DB.ExecContext(ctx, `
+	res, err := srv.DB.NamedExecContext(ctx, `
 		INSERT INTO feed_sources (link, title, authors)
-		VALUES (?, ?, ?)
+		VALUES (:link, :title, :authors)
 		ON CONFLICT (link) DO UPDATE SET 
 			title = title,
 			authors = authors
-	`, feed.Link, feed.Title, feed.Authors)
+	`, feed)
 	if err != nil {
 		return feed, err
 	}
@@ -90,5 +97,40 @@ func storeEntry(
 	feed Feed,
 	parsedItem *gofeed.Item,
 ) error {
+	link := parsedItem.Link
+	if link == "" && len(parsedItem.Links) > 0 {
+		link = parsedItem.Links[0]
+	} else {
+		return ErrEntryHasNoLink
+	}
+
+	entry := Entry{
+		FeedID:      feed.ID,
+		Link:        link,
+		PublishedOn: *parsedItem.PublishedParsed,
+		Title:       parsedItem.Title,
+		Description: parsedItem.Description,
+		Content:     parsedItem.Content,
+	}
+
+	res, err := srv.DB.NamedExecContext(ctx, `
+		INSERT INTO feed_entries
+			(id, source_id, link, published_on, title, description, content)
+		VALUES 
+			(:id, :source_id, :link, :published_on, :title, :description, :content)
+		ON CONFLICT IGNORE
+	`, feed)
+	if err != nil {
+		return errors.Wrap(err, "failed upserting feed entry")
+	}
+
+	rowsAffected, err := res.RowsAffected()
+	if err != nil {
+		return errors.Wrap(err, "failed to fetch rows affected")
+	}
+	if rowsAffected > 0 {
+		log.Printf("Stored blog post %s - %s\n", feed.Link, entry.Title)
+	}
+
 	return nil
 }

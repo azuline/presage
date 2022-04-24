@@ -7,11 +7,13 @@ import (
 	_ "modernc.org/sqlite"
 
 	"github.com/azuline/presage/pkg/email"
+	"github.com/jmoiron/sqlx"
 )
 
 type Services struct {
-	DB    *sql.DB
-	Email email.Client
+	DB      *sqlx.DB
+	PlainDB *sql.DB
+	Email   email.Client
 }
 
 // Initialize initializes services used across the application via a dependency
@@ -21,15 +23,17 @@ func Initialize(
 	smtpCreds email.SMTPCreds,
 ) (*Services, error) {
 	// Initialize services.
-	db, err := sql.Open("sqlite", databasePath)
+	plainDB, err := sql.Open("sqlite", databasePath)
 	if err != nil {
 		return nil, err
 	}
 
+	db := sqlx.NewDb(plainDB, "sqlite")
 	emailClient := email.NewClient(smtpCreds)
 
 	return &Services{
-		DB:    db,
-		Email: emailClient,
+		DB:      db,
+		PlainDB: plainDB,
+		Email:   emailClient,
 	}, nil
 }

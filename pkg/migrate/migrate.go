@@ -22,7 +22,7 @@ func Migrate(srv *services.Services) error {
 		return errors.Wrap(err, "failed to create migration iofs")
 	}
 
-	instance, err := sqlite.WithInstance(srv.DB, &sqlite.Config{})
+	instance, err := sqlite.WithInstance(srv.PlainDB, &sqlite.Config{})
 	if err != nil {
 		return errors.Wrap(err, "failed to create sqlite instance")
 	}

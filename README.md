@@ -3,12 +3,31 @@
 `presage` is a tool that scrapes RSS feeds and sends out an email for new
 articles.
 
+Scraped articles are stored in a SQLite database. All outbound emails are
+recorded in the SQLite database to ensure only new articles are sent.
+
+Outbound emails are recorded as a `(sent_to_email, article_link)` tuple.
+"New" emails are tracked per email address. See [Backfill](#backfill) to
+backfill outbound email records for a new email address.
+
+**You probably want to backfill first when downloading.**
+
+## Installation
+
+Due to this project being personal, we don't distribute any binaries right now.
+The binary can be compiled natively with the standard Go 1.18 toolchain and the
+`make build` Makefile rule.
+
+The Go toolchain is available with the provided `shell.nix`, or can be
+installed separately.
+
 ## Usage
 
 This tool is intended to be run periodically via a cronjob.
 
 This tool must be called with all the following parameters and environment
-variables:
+variables. We send outbound email via SMTP and store state in a SQLite database
+file.
 
 ```
 export SMTP_USER=username@ema.il
@@ -37,10 +56,18 @@ http://feed.two/again/atom.xml
 http://feed.three/whatever/hopeitsxml
 ```
 
+### Backfill
+
+A `-backfill` flag takes all articles and records an outbound
+`(sent_to_email, article_link)` for each article. However, it does not send an
+email. This can be used to avoid sending every prior article to a new email
+address.
+
 ### Dry Run
 
-The optional `-dry-run` flag does everything up until sending the emails, at
-which point it stops and does not continue.
+The optional `-dry-run` flag does everything up until sending and logging the
+emails, at which point it stops and does not continue. No records of outbound
+emails are recorded, nor are any sent.
 
 ## Development
 

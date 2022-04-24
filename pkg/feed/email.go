@@ -31,12 +31,12 @@ func constructBody(entry EntryWithSourceTitle) string {
 		body += fmt.Sprintf("<h1>%s</h1>\n", html.EscapeString(entry.Title))
 	}
 	if entry.SourceTitle != "" {
-		body += fmt.Sprintf("<h3>%s</h3>\n", html.EscapeString(entry.SourceTitle))
+		body += fmt.Sprintf("<h2>%s</h2>\n", html.EscapeString(entry.SourceTitle))
 	}
-	body += "Published on " + entry.PublishedOn + "<br>"
+	body += "Published on " + entry.PublishedOn + "<br><br>"
 
 	body += fmt.Sprintf(
-		"Link: <a href=\"%s\">%s</a><br><hr>",
+		"Link: <a href=\"%s\">%s</a><br><br><hr><br>",
 		html.EscapeString(entry.Link),
 		html.EscapeString(entry.Link),
 	)

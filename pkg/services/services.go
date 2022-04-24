@@ -14,6 +14,8 @@ type Services struct {
 	Email email.Client
 }
 
+// Initialize initializes services used across the application via a dependency
+// injection.
 func Initialize(
 	databasePath string,
 	smtpCreds email.SMTPCreds,

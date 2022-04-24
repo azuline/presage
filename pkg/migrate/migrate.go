@@ -14,6 +14,8 @@ import (
 //go:embed sql/*.sql
 var fs embed.FS
 
+// Migrate migrates the SQLite database to the most recent version, applying
+// the migrations in the `sql/` directory.
 func Migrate(srv *services.Services) error {
 	migs, err := iofs.New(fs, "sql")
 	if err != nil {

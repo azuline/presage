@@ -25,6 +25,14 @@ func main() {
 	dryRun := *flag.Bool("dry-run", false, "don't send any emails")
 	flag.Parse()
 
+	// Validate flags.
+	if feedsList == "" {
+		log.Fatalln(errors.New("must provide a -feeds-list flag"))
+	}
+	if sendTo == "" {
+		log.Fatalln(errors.New("must provide a -send-to flag"))
+	}
+
 	// Load environment variables.
 	if err := loadEnvvars(envFile); err != nil {
 		log.Fatalln(err)
@@ -77,6 +85,8 @@ func main() {
 	}
 }
 
+// loadEnvvars loads environment variables from envFile if passed, otherwise
+// .env if it exists, otherwise does nothing.
 func loadEnvvars(envFile string) error {
 	// If envFile is passed in, read from that.
 	if envFile != "" {

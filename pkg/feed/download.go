@@ -92,7 +92,6 @@ func upsertFeed(
 	return feed, nil
 }
 
-// storeEntry stores a feed entry into the database and returns its ID.
 func storeEntry(
 	ctx context.Context,
 	srv *services.Services,

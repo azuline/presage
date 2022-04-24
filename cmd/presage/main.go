@@ -66,7 +66,7 @@ func main() {
 	if err := feed.DownloadNewFeedEntries(ctx, srv, feedURLs); err != nil {
 		log.Fatalln(err)
 	}
-	newEntries, err := feed.ReadNewEntries(ctx, srv)
+	newEntries, err := feed.ReadNewEntries(ctx, srv, *sendTo)
 	if err != nil {
 		log.Fatalln(err)
 	}

@@ -18,3 +18,10 @@ type Entry struct {
 	Description string    `db:"description"`
 	Content     string    `db:"content"`
 }
+
+type SentEmail struct {
+	ID      int       `db:"id"`
+	EntryID int       `db:"entry_id"`
+	ToEmail string    `db:"to_email"`
+	SentOn  time.Time `db:"sent_on"`
+}

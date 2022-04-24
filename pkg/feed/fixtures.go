@@ -32,11 +32,11 @@ func TestFeedSource(t *testing.T, srv *services.Services) Feed {
 func TestFeedEntry(t *testing.T, srv *services.Services, feed Feed) Entry {
 	entry := Entry{
 		FeedID:      feed.ID,
-		Link:        "https://feed.one/article-one",
+		Link:        psrand.String(12),
 		PublishedOn: time.Now(),
-		Title:       "Title",
-		Description: "Interesting description",
-		Content:     "3000 words go here",
+		Title:       psrand.String(12),
+		Description: psrand.String(12),
+		Content:     psrand.String(12),
 	}
 	res, err := srv.DB.NamedExec(`
 		INSERT INTO feed_entries 
@@ -51,4 +51,23 @@ func TestFeedEntry(t *testing.T, srv *services.Services, feed Feed) Entry {
 
 	entry.ID = int(lastInsertID)
 	return entry
+}
+
+func TestSentEmail(t *testing.T, srv *services.Services, entry Entry) SentEmail {
+	sent := SentEmail{
+		EntryID: entry.ID,
+		ToEmail: psrand.String(12),
+		SentOn:  time.Now(),
+	}
+	res, err := srv.DB.NamedExec(`
+		INSERT INTO feed_sent_emails (entry_id, to_email, sent_on)
+		VALUES (:entry_id, :to_email, :sent_on)
+	`, sent)
+	require.NoError(t, err)
+
+	lastInsertID, err := res.LastInsertId()
+	require.NoError(t, err)
+
+	sent.ID = int(lastInsertID)
+	return sent
 }

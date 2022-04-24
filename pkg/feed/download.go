@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"time"
 
 	"github.com/mmcdole/gofeed"
 	"github.com/pkg/errors"
@@ -108,10 +109,15 @@ func storeEntry(
 		}
 	}
 
+	publishedOn := time.Time{}
+	if parsedItem.PublishedParsed != nil {
+		publishedOn = *parsedItem.PublishedParsed
+	}
+
 	entry := Entry{
 		FeedID:      feed.ID,
 		Link:        link,
-		PublishedOn: *parsedItem.PublishedParsed,
+		PublishedOn: publishedOn,
 		Title:       parsedItem.Title,
 		Description: parsedItem.Description,
 		Content:     parsedItem.Content,

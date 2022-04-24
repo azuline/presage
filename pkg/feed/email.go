@@ -8,7 +8,12 @@ import (
 	"github.com/azuline/presage/pkg/services"
 )
 
-func SendEntry(ctx context.Context, srv *services.Services, to string, entry EntryWithSourceTitle) error {
+func SendEntry(
+	ctx context.Context,
+	srv *services.Services,
+	to string,
+	entry EntryWithSourceTitle,
+) error {
 	if err := srv.Email.SendEmail(to, constructSubject(entry), constructBody(entry)); err != nil {
 		return err
 	}
@@ -23,14 +28,18 @@ func constructBody(entry EntryWithSourceTitle) string {
 	body := ""
 
 	if entry.Title != "" {
-		body += fmt.Sprintf("<h1>%s</h1><br>", html.EscapeString(entry.Title))
+		body += fmt.Sprintf("<h1>%s</h1>\n", html.EscapeString(entry.Title))
 	}
 	if entry.SourceTitle != "" {
-		body += fmt.Sprintf("<h3>%s</h3><br><br>", html.EscapeString(entry.SourceTitle))
+		body += fmt.Sprintf("<h3>%s</h3>\n", html.EscapeString(entry.SourceTitle))
 	}
-	body += "Published on " + entry.PublishedOn + "<br><br>"
+	body += "Published on " + entry.PublishedOn + "<br>"
 
-	body += fmt.Sprintf("Link: <a href=\"%s\">%s</a><br><br>", html.EscapeString(entry.Link), html.EscapeString(entry.Link))
+	body += fmt.Sprintf(
+		"Link: <a href=\"%s\">%s</a><br><hr>",
+		html.EscapeString(entry.Link),
+		html.EscapeString(entry.Link),
+	)
 
 	switch {
 	case entry.Description != "":
@@ -44,11 +53,21 @@ func constructBody(entry EntryWithSourceTitle) string {
 	return body
 }
 
-func BackfillSendingEntry(ctx context.Context, srv *services.Services, to string, entry EntryWithSourceTitle) error {
+func BackfillSendingEntry(
+	ctx context.Context,
+	srv *services.Services,
+	to string,
+	entry EntryWithSourceTitle,
+) error {
 	return recordSentEntry(ctx, srv, to, entry)
 }
 
-func recordSentEntry(ctx context.Context, srv *services.Services, to string, entry EntryWithSourceTitle) error {
+func recordSentEntry(
+	ctx context.Context,
+	srv *services.Services,
+	to string,
+	entry EntryWithSourceTitle,
+) error {
 	_, err := srv.DB.ExecContext(
 		ctx,
 		"INSERT INTO feed_sent_emails (entry_id, to_email) VALUES (?, ?)",

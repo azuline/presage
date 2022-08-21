@@ -12,7 +12,8 @@
 
   outputs = { self, nixpkgs, flake-utils }:
     flake-utils.lib.eachDefaultSystem (system:
-      let pkgs = nixpkgs.legacyPackages.${system}; in {
+      let pkgs = nixpkgs.legacyPackages.${system}; in rec {
+        defaultPackage = devShells.default;
         devShells.default = pkgs.mkShell {
           buildInputs = [
             (pkgs.buildEnv {

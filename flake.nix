@@ -19,6 +19,7 @@
             (pkgs.buildEnv {
               name = "env";
               paths = with pkgs; [
+                gnumake
                 golangci-lint
                 go_1_18
                 gopls

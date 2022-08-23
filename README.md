@@ -15,11 +15,12 @@ backfill outbound email records for a new email address.
 ## Installation
 
 Due to this project being personal, we don't distribute any binaries right now.
+
 The binary can be compiled natively with the standard Go 1.18 toolchain and the
 `make build` Makefile rule.
 
-The Go toolchain is available with the provided `flake.nix`, or can be
-installed separately.
+Alternatively, we provide a Nix flake with the binary as a package and a
+devShell for editing the source.
 
 ## Usage
 

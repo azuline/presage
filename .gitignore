@@ -17,6 +17,7 @@
 presage
 .direnv
 .cache
+result
 
 # Local testing
 .env

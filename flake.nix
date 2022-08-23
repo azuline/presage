@@ -13,7 +13,18 @@
   outputs = { self, nixpkgs, flake-utils }:
     flake-utils.lib.eachDefaultSystem (system:
       let pkgs = nixpkgs.legacyPackages.${system}; in rec {
-        defaultPackage = devShells.default;
+        defaultPackage = packages.default;
+        packages.default = pkgs.buildGoModule {
+          pname = "presage";
+          version = "0.1.0";
+          src = ./.;
+          vendorSha256 = "sha256-O9u8ThzGOcfWrDjA87RaOPez8pfqUo+AcciSSAw2sfk=";
+          meta = {
+            description = "scrape rss feeds and send emails for new articles";
+            homepage = "https://github.com/azuline/presage";
+            license = nixpkgs.lib.licenses.agpl3Plus;
+          };
+        };
         devShells.default = pkgs.mkShell {
           buildInputs = [
             (pkgs.buildEnv {

@@ -25,7 +25,7 @@
             license = nixpkgs.lib.licenses.agpl3Plus;
           };
         };
-        devShells.default = pkgs.mkShell {
+        devShell = pkgs.mkShell {
           buildInputs = [
             (pkgs.buildEnv {
               name = "env";

@@ -13,8 +13,11 @@
   outputs = { self, nixpkgs, flake-utils }:
     flake-utils.lib.eachDefaultSystem (system:
       let pkgs = nixpkgs.legacyPackages.${system}; in rec {
-        defaultPackage = packages.default;
-        packages.default = pkgs.buildGoModule {
+        defaultApp = {
+          type = "app";
+          program = "${defaultPackage}/bin/presage";
+        };
+        defaultPackage = pkgs.buildGoModule {
           pname = "presage";
           version = "0.1.0";
           src = ./.;

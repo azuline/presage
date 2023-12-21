@@ -3,6 +3,7 @@ package email
 import (
 	"fmt"
 	"net/smtp"
+	"time"
 )
 
 type SMTPCreds struct {
@@ -34,6 +35,7 @@ func (c *client) SendEmail(to, subject, body string) error {
 		fmt.Sprintf("From: %s\n", c.creds.User) +
 			fmt.Sprintf("To: %s\n", to) +
 			fmt.Sprintf("Subject: %s\n", subject) +
+			fmt.Sprintf("Date: %s\n", time.Now().Format(time.RFC1123Z)) +
 			"MIME-version: 1.0;\nContent-Type: text/html; charset=\"UTF-8\";\n\n" +
 			"<html><body>" +
 			body +

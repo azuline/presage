@@ -25,7 +25,7 @@ func DownloadNewFeedEntries(
 	for _, url := range feedURLs {
 		parsedFeed, err := parser.ParseURLWithContext(url, ctx)
 		if err != nil {
-			log.Printf("Failed to parse feed %s\n", url)
+			log.Printf("Failed to parse feed %s: %s", url, err)
 			continue
 		}
 

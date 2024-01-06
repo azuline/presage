@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"time"
 
 	"github.com/mmcdole/gofeed"
 	"github.com/pkg/errors"
@@ -23,7 +24,7 @@ func DownloadNewFeedEntries(
 	parser := gofeed.NewParser()
 
 	for _, url := range feedURLs {
-		parsedFeed, err := parser.ParseURLWithContext(url, ctx)
+		parsedFeed, err := parseFeed(ctx, parser, url)
 		if err != nil {
 			log.Printf("Failed to parse feed %s: %s", url, err)
 			continue
@@ -48,6 +49,16 @@ func DownloadNewFeedEntries(
 		}
 	}
 	return nil
+}
+
+func parseFeed(
+	ctx context.Context,
+	parser *gofeed.Parser,
+	url string,
+) (*gofeed.Feed, error) {
+	ctx, cancel := context.WithTimeout(ctx, 15*time.Second)
+	defer cancel()
+	return parser.ParseURLWithContext(url, ctx)
 }
 
 func upsertFeed(

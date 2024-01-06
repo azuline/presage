@@ -1,6 +1,7 @@
 package feed
 
 import (
+	"log"
 	"os"
 	"strings"
 
@@ -15,5 +16,6 @@ func ParseFeedsList(feedsList string) ([]string, error) {
 		return nil, errors.Wrap(err, "failed to read feeds list")
 	}
 
+	log.Println("Parsed feeds list from file")
 	return strings.Fields(string(ccontents)), nil
 }

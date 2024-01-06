@@ -2,6 +2,7 @@ package migrate
 
 import (
 	"embed"
+	"log"
 
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/golang-migrate/migrate/v4/database/sqlite"
@@ -36,5 +37,6 @@ func Migrate(srv *services.Services) error {
 		return errors.Wrap(err, "failed to migrate database")
 	}
 
+	log.Println("Ran database migrator")
 	return nil
 }
